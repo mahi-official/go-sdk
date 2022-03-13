@@ -123,8 +123,8 @@ type Keploy struct {
 	Log    *zap.Logger
 	client *http.Client
 	deps   sync.Map
-	//Deps   map[string][]models.Dependency
-	resp sync.Map
+	//Deps map[string][]models.Dependency
+	resp   sync.Map
 	//Resp map[string]models.HttpResp
 }
 
@@ -320,7 +320,7 @@ func (k *Keploy) put(tcs regression.TestCaseReq) {
 
 	var str = k.cfg.App.Filter
 	reg:= regexp.MustCompile(str.UrlRegex)
-	if reg.FindString(tcs.URI) == "" {
+	if str.UrlRegex!="" && reg.FindString(tcs.URI) == ""{
 		return
 	}
 
@@ -400,7 +400,6 @@ func (k *Keploy) denoise (id string, tcs regression.TestCaseReq){
 		return
 	}
 	k.setKey(r)
-	k.Log.Debug("header before denoise: ", zap.Any("", r.Header))
 	r.Header.Set("Content-Type", "application/json")
 
 	_, err = k.client.Do(r)
